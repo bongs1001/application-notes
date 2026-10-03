@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>지원 노트 · 채용 지원 대시보드</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script><script type="module" src="app.js"></script>
+</head>
+<body>
+<header><a class="brand" href="./"><span class="brand-icon">↗</span> 지원 노트 <span class="tag">MY CAREER</span></a><div id="account"><button id="login" class="primary">GitHub로 로그인</button><button id="logout" hidden>로그아웃</button></div></header>
+<main>
+  <div class="heading"><div><p class="eyebrow">APPLICATION TRACKER</p><h1>다음 기회를 향한 기록</h1><p class="muted">지원부터 다음 일정까지, 한곳에서 차근차근.</p></div><button id="add" class="primary" disabled>＋ 지원 기록 추가</button></div>
+  <div id="notice" role="status" aria-live="polite"></div>
+  <section id="setup" class="panel" hidden><h2>대시보드 연결 준비</h2><p>아직 계정과 저장소가 연결되지 않았습니다. 연결 후 두 PC에서 같은 기록을 사용할 수 있습니다.</p><p class="muted">설정 안내에 따라 Supabase 공개 연결 정보를 config.js에 입력하세요. 메일 비밀번호는 화면에 입력하지 않습니다.</p><button id="demo">예시 화면 살펴보기</button></section>
+  <section class="metrics" aria-label="진행 요약"><article><span>지원 완료</span><strong id="metricApplied">—</strong><small>접수 후 결과 대기</small></article><article><span>전형 진행</span><strong id="metricProgress">—</strong><small>서류 통과 · 면접</small></article><article><span>면접 예정</span><strong id="metricInterview">—</strong><small>다가오는 면접 일정</small></article><article class="review-metric"><span>확인 필요</span><strong id="metricReview">—</strong><small>메일에서 발견한 업데이트</small></article></section>
+  <div class="workspace"><section class="panel records"><div class="section-heading"><h2>지원 기록 <span id="count" class="badge">0</span></h2><button id="refresh" disabled>↻ 새로고침</button></div>
+    <div class="filters"><label class="search">회사·직무 검색<input id="search" type="search" placeholder="회사명 또는 직무를 입력하세요"></label><label>진행 상태<select id="filterStatus"><option value="">모든 상태</option></select></label><label>지원 경로<select id="filterSource"><option value="">모든 경로</option></select></label></div>
+    <div class="table-wrap"><table><thead><tr><th>회사 / 직무</th><th>진행 상태</th><th>지원 경로</th><th>지원일 / 마감일</th><th>다음 일정</th><th>관리</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div id="empty" class="empty"><span>↗</span><h3>첫 지원 기록을 기다리고 있어요</h3><p>로그인 후 직접 추가하거나, 연결된 메일에서 접수 내역을 가져오세요.</p></div>
+    <footer class="data-tools"><button id="export" disabled>JSON 백업 내보내기</button><button id="import" disabled>기존 백업 가져오기</button><input id="importFile" type="file" accept="application/json,.json" hidden><small>기록은 본인 계정으로만 열람할 수 있습니다.</small></footer>
+  </section><aside><section class="panel sync"><div class="section-heading"><h2>메일 연동</h2><span id="syncBadge" class="badge">미연결</span></div><p><span class="dot"></span> 네이버 · 지원 전용 메일함</p><p class="muted">1시간마다 접수 내역을 확인합니다.</p><dl><dt>마지막 성공</dt><dd id="lastSync">아직 수집 기록이 없습니다</dd><dt>연결 상태</dt><dd id="syncDetail">로그인 후 확인할 수 있습니다</dd></dl></section>
+  <section class="panel"><div class="section-heading"><h2>확인할 업데이트</h2><span id="reviewCount" class="badge">0</span></div><p class="muted compact">정확하지 않은 정보와 전형 결과는 직접 확인해 주세요.</p><div id="reviews"><p class="muted">새 업데이트가 여기에 표시됩니다.</p></div></section></aside></div>
+</main>
+<dialog id="editor"><form id="editForm"><div class="section-heading"><h2 id="editorTitle">지원 기록 추가</h2><button type="button" id="closeEditor" aria-label="닫기">✕</button></div><p id="editorError" role="alert"></p>
+<label id="linkLabel" hidden>기존 지원에 연결<select id="linkJob"><option value="">새 지원 기록으로 등록</option></select></label>
+<div class="form-grid"><label>회사<input name="company" required maxlength="200"></label><label>직무<input name="role" required maxlength="200"></label><label>진행 상태<select name="status" id="editStatus"></select></label><label>지원 경로<input name="source" list="sources" maxlength="100"><datalist id="sources"><option>원티드</option><option>사람인</option><option>잡코리아</option><option>기업 홈페이지</option><option>직접 지원</option></datalist></label><label>지원일<input name="applied_on" type="date"></label><label>마감일<input name="deadline" type="date"></label><label>다음 일정<input name="next_at" type="datetime-local"></label><label>일정 내용<input name="next_label" maxlength="200"></label></div>
+<label>공고 원문 URL<input name="url" type="url" maxlength="2000" placeholder="https://"></label><label>접수번호<input name="receipt_number" maxlength="200"></label><label>메모 / 분석 결과<textarea name="notes" rows="4" maxlength="20000"></textarea></label><label>보관한 공고 본문<textarea name="body" rows="3" maxlength="100000"></textarea></label><details><summary>기존 보관함 추가 정보</summary><label>최소 경력(년)<input name="years" maxlength="20"></label></details><div class="dialog-actions"><button id="deleteJob" type="button" class="danger" hidden>기록 삭제</button><button type="submit" class="primary" id="save">저장</button></div></form></dialog>
+</body></html>
+
